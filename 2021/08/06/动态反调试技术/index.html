@@ -1,0 +1,227 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>动态反调试技术 | 4nsw3r's Blog</title><meta name="keywords" content="CTF-RE,反调试"><meta name="author" content="4nsw3r,2239888030@qq.com"><meta name="copyright" content="4nsw3r"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="几个常见的动态反调试技术">
+<meta property="og:type" content="article">
+<meta property="og:title" content="动态反调试技术">
+<meta property="og:url" content="https://4nsw3r.top/2021/08/06/%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/index.html">
+<meta property="og:site_name" content="4nsw3r&#39;s Blog">
+<meta property="og:description" content="几个常见的动态反调试技术">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://4nsw3r.top/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg">
+<meta property="article:published_time" content="2021-08-06T07:59:52.476Z">
+<meta property="article:modified_time" content="2021-08-06T08:01:21.309Z">
+<meta property="article:author" content="4nsw3r">
+<meta property="article:tag" content="CTF-RE">
+<meta property="article:tag" content="反调试">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://4nsw3r.top/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg"><link rel="shortcut icon" href="https://thirdqq.qlogo.cn/g?b=sdk&k=j3LOiav9IluKSYg1VEibblZw&s=640"><link rel="canonical" href="https://4nsw3r.top/2021/08/06/%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = { 
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlighjs","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  date_suffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  source: {
+    jQuery: 'https://cdn.jsdelivr.net/npm/jquery@latest/dist/jquery.min.js',
+    justifiedGallery: {
+      js: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/js/jquery.justifiedGallery.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/justifiedGallery/dist/css/justifiedGallery.min.css'
+    },
+    fancybox: {
+      js: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.js',
+      css: 'https://cdn.jsdelivr.net/npm/@fancyapps/fancybox@latest/dist/jquery.fancybox.min.css'
+    }
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isanchor: true
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '动态反调试技术',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2021-08-06 16:01:21'
+}</script><noscript><style type="text/css">
+  #nav {
+    opacity: 1
+  }
+  .justified-gallery img {
+    opacity: 1
+  }
+
+  #recent-posts time,
+  #post-meta time {
+    display: inline !important
+  }
+</style></noscript><script>(win=>{
+    win.saveToLocal = {
+      set: function setWithExpiry(key, value, ttl) {
+        if (ttl === 0) return
+        const now = new Date()
+        const expiryDay = ttl * 86400000
+        const item = {
+          value: value,
+          expiry: now.getTime() + expiryDay,
+        }
+        localStorage.setItem(key, JSON.stringify(item))
+      },
+
+      get: function getWithExpiry(key) {
+        const itemStr = localStorage.getItem(key)
+
+        if (!itemStr) {
+          return undefined
+        }
+        const item = JSON.parse(itemStr)
+        const now = new Date()
+
+        if (now.getTime() > item.expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return item.value
+      }
+    }
+  
+    win.getScript = url => new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      script.src = url
+      script.async = true
+      script.onerror = reject
+      script.onload = script.onreadystatechange = function() {
+        const loadState = this.readyState
+        if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+        script.onload = script.onreadystatechange = null
+        resolve()
+      }
+      document.head.appendChild(script)
+    })
+  
+      win.activateDarkMode = function () {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = function () {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+          if (t === 'dark') activateDarkMode()
+          else if (t === 'light') activateLightMode()
+        
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+    const detectApple = () => {
+      if (GLOBAL_CONFIG_SITE.isHome && /iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+    })(window)</script><meta name="generator" content="Hexo 5.4.0"><link rel="alternate" href="/atom.xml" title="4nsw3r's Blog" type="application/atom+xml">
+</head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://thirdqq.qlogo.cn/g?b=sdk&amp;k=j3LOiav9IluKSYg1VEibblZw&amp;s=640" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="site-data"><div class="data-item is-center"><div class="data-item-link"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a></div></div><div class="data-item is-center"><div class="data-item-link"><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div></div><hr/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg')"><nav id="nav"><span id="blog_name"><a id="site-name" href="/">4nsw3r's Blog</a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 分类</span></a></div><div class="menus_item"><a class="site-page" href="/link/"><i class="fa-fw fas fa-link"></i><span> 友链</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">动态反调试技术</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2021-08-06T07:59:52.476Z" title="发表于 2021-08-06 15:59:52">2021-08-06</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2021-08-06T08:01:21.309Z" title="更新于 2021-08-06 16:01:21">2021-08-06</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/%E3%80%8A%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86%E3%80%8B%E7%AC%94%E8%AE%B0/">《逆向工程核心原理》笔记</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-wordcount"><i class="far fa-file-word fa-fw post-meta-icon"></i><span class="post-meta-label">字数总计:</span><span class="word-count">1.3k</span><span class="post-meta-separator">|</span><i class="far fa-clock fa-fw post-meta-icon"></i><span class="post-meta-label">阅读时长:</span><span>5分钟</span></span><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="动态反调试技术"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"></span></span><span class="post-meta-separator">|</span><span class="post-meta-commentcount"><i class="far fa-comments fa-fw post-meta-icon"></i><span class="post-meta-label">评论数:</span><a href="/2021/08/06/%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/#post-comment"><span class="gitalk-comment-count"></span></a></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h1 id="动态反调试技术"><a href="#动态反调试技术" class="headerlink" title="动态反调试技术"></a>动态反调试技术</h1><h2 id="使用-SEH-异常进行动态反调试"><a href="#使用-SEH-异常进行动态反调试" class="headerlink" title="使用 SEH 异常进行动态反调试"></a>使用 SEH 异常进行动态反调试</h2><p>正常运行的进程发生异常时，在 SEH 机制作用下，OS 会接收异常，然后调用进程中注册的 SEH 处理。若进程在调试运行中发生异常，调试器就会接收处理。利用该特性可以判断程序是否处于调试状态，然后根据不同结果执行不同操作。</p>
+<h3 id="常见-SEH-异常："><a href="#常见-SEH-异常：" class="headerlink" title="常见 SEH 异常："></a>常见 SEH 异常：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">EXCEPTION_ACCESS_VIOLATION    非法访问异常</span><br><span class="line">EXCEPTION_BREAKPOINT          int 3 断点异常</span><br><span class="line">EXCEPTION_ILLEGAL_INSTRUCTION 无法解析指令异常</span><br><span class="line">EXCEPTION_INT_DIVIDE_BY_ZERO  整数除 0 异常</span><br><span class="line">EXCEPTION_SINGLE_STEP         单步工作模式异常</span><br></pre></td></tr></table></figure>
+
+<h3 id="示例1：利用-SEH-在调试运行时跳转到非法地址处使调试终止："><a href="#示例1：利用-SEH-在调试运行时跳转到非法地址处使调试终止：" class="headerlink" title="示例1：利用 SEH 在调试运行时跳转到非法地址处使调试终止："></a>示例1：利用 SEH 在调试运行时跳转到非法地址处使调试终止：</h3><figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">;注册SEH</span><br><span class="line">push handler</span><br><span class="line">push DWORD ptr fs : [0]</span><br><span class="line">mov DWORD ptr fs : [0] , esp</span><br><span class="line"></span><br><span class="line">;触发 int 3 断点</span><br><span class="line">int 3</span><br><span class="line"></span><br><span class="line">;若无视异常则跳转到非法地址</span><br><span class="line">mov eax, 0xFFFFFFFF</span><br><span class="line">jmp eax</span><br><span class="line">;若非调试状态则正常运行</span><br><span class="line">handler:</span><br><span class="line">;ss : [esp + 0xc]是 CONTEXT *pContext结构体指针，ds:[eax+0xb8]指向EIP成员，使异常处理返回后跳转到正常代码处</span><br><span class="line">mov eax, dword ptr ss : [esp + 0xc]</span><br><span class="line">    mov ebx, normal_code</span><br><span class="line">    mov dword ptr ds : [eax + 0xb8] , ebx</span><br><span class="line">    xor eax, eax</span><br><span class="line">    retn</span><br><span class="line"></span><br><span class="line">normal_code :</span><br><span class="line">pop dword ptr fs : [0]</span><br><span class="line">    add esp, 4</span><br></pre></td></tr></table></figure>
+
+<h3 id="示例2：利用-SEH-在调试运行和非调试运行时对-flag-作不同的加密"><a href="#示例2：利用-SEH-在调试运行和非调试运行时对-flag-作不同的加密" class="headerlink" title="示例2：利用 SEH 在调试运行和非调试运行时对 flag 作不同的加密"></a>示例2：利用 SEH 在调试运行和非调试运行时对 flag 作不同的加密</h3><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">char</span> ch[] = &#123; <span class="number">87</span>,<span class="number">93</span>,<span class="number">80</span>,<span class="number">86</span>,<span class="number">74</span>,<span class="number">69</span>,<span class="number">89</span>,<span class="number">88</span>,<span class="number">66</span>,<span class="number">110</span>,<span class="number">88</span>,<span class="number">66</span>,<span class="number">110</span>,<span class="number">72</span>,<span class="number">94</span>,<span class="number">68</span>,<span class="number">67</span>,<span class="number">110</span>,<span class="number">87</span>,<span class="number">93</span>,<span class="number">80</span>,<span class="number">86</span>,<span class="number">76</span>,<span class="number">0</span> &#125;;</span><br><span class="line"><span class="keyword">char</span> flag[<span class="number">40</span>];</span><br><span class="line"><span class="built_in">scanf</span>(<span class="string">&quot;%24s&quot;</span>, flag);</span><br><span class="line"></span><br><span class="line">__try &#123;</span><br><span class="line">    <span class="keyword">int</span>* a = <span class="literal">NULL</span>;</span><br><span class="line">    *a = <span class="number">1</span>;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">strlen</span>(flag); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        flag[i] ^= <span class="string">&#x27;2&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line">__except (EXCEPTION_EXECUTE_HANDLER)&#123;</span><br><span class="line">    <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="built_in">strlen</span>(flag); i++)</span><br><span class="line">    &#123;</span><br><span class="line">        flag[i] ^= <span class="string">&#x27;1&#x27;</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">if</span>(!<span class="built_in">strcmp</span>(flag,ch))</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;right&quot;</span>);  </span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="示例3：单步执行异常"><a href="#示例3：单步执行异常" class="headerlink" title="示例3：单步执行异常"></a>示例3：单步执行异常</h3><p>CPU 中的 EFLAGS 寄存器的 TF 标志位(Index 8)为1时，CPU 将进入单步执行模式，每执行一条指令就会触发一次<code>EXCEPTION_SINGLE_STEP</code>异常，同时 TF 变为0。利用该特性可以探测调试器。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">;由于 EFLAGS 寄存器无法直接修改，只能通过栈修改</span><br><span class="line">pushfd</span><br><span class="line">or DWORD PTR SS:[ESP],100</span><br><span class="line">popfd</span><br><span class="line">nop ;用来触发异常</span><br></pre></td></tr></table></figure>
+
+<p>或者也有C语言版本：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span><span class="meta-string">&lt;intrin.h&gt;</span></span></span><br><span class="line">__try &#123;</span><br><span class="line">	<span class="keyword">int</span> a = __readeflags();</span><br><span class="line">	a |= <span class="number">0x100</span>;</span><br><span class="line">	__writeeflags(a);</span><br><span class="line">	a++;	;随便一个指令触发异常</span><br><span class="line">&#125;</span><br><span class="line">__except (GetExceptionCode()==EXCEPTION_SINGLE_STEP?EXCEPTION_EXECUTE_HANDLER:EXCEPTION_CONTINUE_SEARCH) &#123;</span><br><span class="line">	<span class="built_in">printf</span>(<span class="string">&quot;EXCEPTION_SINGLE_STEP&quot;</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="示例4：int-2D-异常"><a href="#示例4：int-2D-异常" class="headerlink" title="示例4：int 2D 异常"></a>示例4：int 2D 异常</h3><p>int 2D 原为内核模式中用来触发断点异常的指令，也可以在用户模式下触发异常，但程序调试运行时不会触发异常，只是忽略。在调试模式下执行 int 2d 指令后，下条指令的第一个字节将被忽略，后一个字节会被识别为新的指令继续执行。并且在调试器（OllyDbg、x32dbg）中，跟踪 int 2d 指令时，不会停在下条指令开始的地方，而是一直运行，直到遇到断点</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br></pre></td><td class="code"><pre><span class="line">BOOL bDebugging = FALSE;</span><br><span class="line"></span><br><span class="line">    __asm &#123;</span><br><span class="line">        // install SEH</span><br><span class="line">        push handler</span><br><span class="line">        push DWORD ptr fs:[0]</span><br><span class="line">        mov DWORD ptr fs:[0], esp</span><br><span class="line">        </span><br><span class="line">        int 0x2d</span><br><span class="line"></span><br><span class="line">        nop</span><br><span class="line">        mov bDebugging, 1</span><br><span class="line">        jmp normal_code</span><br><span class="line"></span><br><span class="line">handler:</span><br><span class="line">        mov eax, dword ptr ss:[esp+0xc]</span><br><span class="line">        mov dword ptr ds:[eax+0xb8], offset normal_code</span><br><span class="line">        mov bDebugging, 0</span><br><span class="line">        xor eax, eax</span><br><span class="line">        retn</span><br><span class="line"></span><br><span class="line">normal_code:</span><br><span class="line">        //   remove SEH</span><br><span class="line">        pop dword ptr fs:[0]</span><br><span class="line">        add esp, 4</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    printf(&quot;Trap Flag (INT 2D)\n&quot;);</span><br><span class="line">    if( bDebugging )  printf(&quot;  =&gt; Debugging!!!\n\n&quot;);</span><br><span class="line">    else              printf(&quot;  =&gt; Not debugging...\n\n&quot;);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Timing-Check-运行时间反调试"><a href="#Timing-Check-运行时间反调试" class="headerlink" title="Timing Check 运行时间反调试"></a>Timing Check 运行时间反调试</h2><p>在调试器或虚拟机中逐行跟踪代码比程序正常运行耗费的时间多。时间计数器的准确程度从高到低：</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RDTSC&gt;NtQueryPerformanceCouner()&gt;GetTickCount()</span><br></pre></td></tr></table></figure>
+
+<h3 id="RDTSC"><a href="#RDTSC" class="headerlink" title="RDTSC"></a>RDTSC</h3><p>x86或x64 CPU 中存在一个 TSC（TimeStampCounter）的64位寄存器，CPU对每个时钟周期计数，然后保存到 TSC 。 <code>RDTSC</code>是一条汇编指令，将<code>TSC</code>的值高32位读入<code>EDX</code>，低32位读入<code>EAX</code>。在 x64 中，仍然先存入两个寄存器，然后对 rax 作移位并和 rdx 做 or 运算，使最终值存储在 rax 中。</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">	RDTSC</span><br><span class="line">	push EDX ;记录原值</span><br><span class="line">	push EAX</span><br><span class="line">	;需要保护的代码</span><br><span class="line">	xor eax,eax</span><br><span class="line">	mov ecx,0x3e8</span><br><span class="line">loc:inc EAX</span><br><span class="line">	loop loc</span><br><span class="line">	RDTSC</span><br><span class="line">	</span><br><span class="line">	pop esi</span><br><span class="line">	pop edi</span><br><span class="line">	;进行比较，如果两次值之差&gt;0xFFFFFF就return</span><br><span class="line">	cmp edx,edi</span><br><span class="line">	ja re</span><br><span class="line">	</span><br><span class="line">	sub eax,esi</span><br><span class="line">	mov ss:[ebp-4],eax</span><br><span class="line">	cmp eax,0xFFFFFF</span><br><span class="line">	ja re</span><br><span class="line">normalcode:</span><br><span class="line">	...</span><br><span class="line">re:</span><br><span class="line">	retn</span><br></pre></td></tr></table></figure>
+
+<p>在 VS2019 和 gcc 里，msvc 将RDTSC指令包装为了函数，使使用变得简单：</p>
+<figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> time=__rdtsc();</span><br><span class="line"><span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">1000</span>; i++)</span><br><span class="line">&#123;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">long</span> <span class="keyword">long</span> time2 = __rdtsc();</span><br><span class="line"><span class="keyword">if</span> (time2 - time &gt; <span class="number">0xFFFFFF</span>)</span><br><span class="line">&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="built_in">printf</span>(<span class="string">&quot;success&quot;</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="0xCC-断点探测法"><a href="#0xCC-断点探测法" class="headerlink" title="0xCC 断点探测法"></a>0xCC 断点探测法</h2><p>程序在进行调试时会设置软件断点，软件断点对应的<code>x86</code>指令为<code>0xCC</code>。因此，检测该指令即可判断程序是否处于调试状态。但由于代码和数据中也会有<code>0xCC</code>，因此只扫描是否存在<code>0xCC</code>并不可靠。<br><img src="/pictures/0xCC1.jpg"><br><img src="/pictures/0xCC2.jpg"></p>
+<h3 id="探测-API-断点"><a href="#探测-API-断点" class="headerlink" title="探测 API 断点"></a>探测 API 断点</h3><p>一般想调试程序的局部功能时，会在 API 最开始处设置断点，然后查看栈中的数据，于是就可以探测 API 头部的<code>0XCC</code>。或者探测自己的重要函数头部等关键点的<code>0xCC</code>。</p>
+<h3 id="比较校验和"><a href="#比较校验和" class="headerlink" title="比较校验和"></a>比较校验和</h3><p>由于<code>0xCC</code>的存在，在存在<code>0xCC</code>的区域的校验和值会和原值不同。校验和的计算有多种方式，实际应用可以使用<code>CRC32</code>算法。</p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta">文章作者: </span><span class="post-copyright-info"><a href="mailto:2239888030@qq.com">4nsw3r</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta">文章链接: </span><span class="post-copyright-info"><a href="https://4nsw3r.top/2021/08/06/%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/">https://4nsw3r.top/2021/08/06/%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta">版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://4nsw3r.top" target="_blank">4nsw3r's Blog</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/CTF-RE/">CTF-RE</a><a class="post-meta__tags" href="/tags/%E5%8F%8D%E8%B0%83%E8%AF%95/">反调试</a></div><div class="post_share"><div class="social-share" data-image="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/social-share.js/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/social-share.js/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="next-post pull-full"><a href="/2021/08/04/%E5%AF%B9%20SEH%20%E7%9A%84%E6%B5%85%E6%98%BE%E8%AE%A4%E8%AF%86/"><img class="next-cover" src="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" onerror="onerror=null;src='/img/404.jpg'" alt="cover of next post"><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">对 SEH 的浅显认识</div></div></a></div></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span> 相关推荐</span></div><div class="relatedPosts-list"><div><a href="/2021/08/03/静态反调试技术/" title="静态反调试技术"><img class="cover" src="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-03</div><div class="title">静态反调试技术</div></div></a></div><div><a href="/2021/07/21/theSecond/" title="googleCTF RE-CPP解题思路"><img class="cover" src="/pictures/googlectf.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-21</div><div class="title">googleCTF RE-CPP解题思路</div></div></a></div><div><a href="/2021/07/27/TLS 回调函数/" title="TLS 回调函数"><img class="cover" src="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-07-27</div><div class="title">TLS 回调函数</div></div></a></div><div><a href="/2021/08/04/对 SEH 的浅显认识/" title="对 SEH 的浅显认识"><img class="cover" src="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" alt="cover"><div class="content is-center"><div class="date"><i class="far fa-calendar-alt fa-fw"></i> 2021-08-04</div><div class="title">对 SEH 的浅显认识</div></div></a></div></div></div><hr/><div id="post-comment"><div class="comment-head"><div class="comment-headline"><i class="fas fa-comments fa-fw"></i><span> 评论</span></div></div><div class="comment-wrap"><div><div id="gitalk-container"></div></div></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://thirdqq.qlogo.cn/g?b=sdk&amp;k=j3LOiav9IluKSYg1VEibblZw&amp;s=640" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">4nsw3r</div><div class="author-info__description">4nsw3r的个人博客</div></div><div class="card-info-data"><div class="card-info-data-item is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/tags/"><div class="headline">标签</div><div class="length-num">6</div></a></div><div class="card-info-data-item is-center"><a href="/categories/"><div class="headline">分类</div><div class="length-num">2</div></a></div></div><a class="button--animated" id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/4nsw3r123"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/4nsw3r123" target="_blank" title="Github"><i class="fab fa-github"></i></a><a class="social-icon" href="mailto:2239888030@qq.com" target="_blank" title="Email"><i class="fas fa-envelope"></i></a></div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF"><span class="toc-number">1.</span> <span class="toc-text">动态反调试技术</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E4%BD%BF%E7%94%A8-SEH-%E5%BC%82%E5%B8%B8%E8%BF%9B%E8%A1%8C%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="toc-number">1.1.</span> <span class="toc-text">使用 SEH 异常进行动态反调试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B8%B8%E8%A7%81-SEH-%E5%BC%82%E5%B8%B8%EF%BC%9A"><span class="toc-number">1.1.1.</span> <span class="toc-text">常见 SEH 异常：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B1%EF%BC%9A%E5%88%A9%E7%94%A8-SEH-%E5%9C%A8%E8%B0%83%E8%AF%95%E8%BF%90%E8%A1%8C%E6%97%B6%E8%B7%B3%E8%BD%AC%E5%88%B0%E9%9D%9E%E6%B3%95%E5%9C%B0%E5%9D%80%E5%A4%84%E4%BD%BF%E8%B0%83%E8%AF%95%E7%BB%88%E6%AD%A2%EF%BC%9A"><span class="toc-number">1.1.2.</span> <span class="toc-text">示例1：利用 SEH 在调试运行时跳转到非法地址处使调试终止：</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B2%EF%BC%9A%E5%88%A9%E7%94%A8-SEH-%E5%9C%A8%E8%B0%83%E8%AF%95%E8%BF%90%E8%A1%8C%E5%92%8C%E9%9D%9E%E8%B0%83%E8%AF%95%E8%BF%90%E8%A1%8C%E6%97%B6%E5%AF%B9-flag-%E4%BD%9C%E4%B8%8D%E5%90%8C%E7%9A%84%E5%8A%A0%E5%AF%86"><span class="toc-number">1.1.3.</span> <span class="toc-text">示例2：利用 SEH 在调试运行和非调试运行时对 flag 作不同的加密</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B3%EF%BC%9A%E5%8D%95%E6%AD%A5%E6%89%A7%E8%A1%8C%E5%BC%82%E5%B8%B8"><span class="toc-number">1.1.4.</span> <span class="toc-text">示例3：单步执行异常</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E7%A4%BA%E4%BE%8B4%EF%BC%9Aint-2D-%E5%BC%82%E5%B8%B8"><span class="toc-number">1.1.5.</span> <span class="toc-text">示例4：int 2D 异常</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Timing-Check-%E8%BF%90%E8%A1%8C%E6%97%B6%E9%97%B4%E5%8F%8D%E8%B0%83%E8%AF%95"><span class="toc-number">1.2.</span> <span class="toc-text">Timing Check 运行时间反调试</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#RDTSC"><span class="toc-number">1.2.1.</span> <span class="toc-text">RDTSC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0xCC-%E6%96%AD%E7%82%B9%E6%8E%A2%E6%B5%8B%E6%B3%95"><span class="toc-number">1.3.</span> <span class="toc-text">0xCC 断点探测法</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%8E%A2%E6%B5%8B-API-%E6%96%AD%E7%82%B9"><span class="toc-number">1.3.1.</span> <span class="toc-text">探测 API 断点</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%AF%94%E8%BE%83%E6%A0%A1%E9%AA%8C%E5%92%8C"><span class="toc-number">1.3.2.</span> <span class="toc-text">比较校验和</span></a></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item"><a class="thumbnail" href="/2021/08/06/%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/" title="动态反调试技术"><img src="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="动态反调试技术"/></a><div class="content"><a class="title" href="/2021/08/06/%E5%8A%A8%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/" title="动态反调试技术">动态反调试技术</a><time datetime="2021-08-06T07:59:52.476Z" title="发表于 2021-08-06 15:59:52">2021-08-06</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/04/%E5%AF%B9%20SEH%20%E7%9A%84%E6%B5%85%E6%98%BE%E8%AE%A4%E8%AF%86/" title="对 SEH 的浅显认识"><img src="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="对 SEH 的浅显认识"/></a><div class="content"><a class="title" href="/2021/08/04/%E5%AF%B9%20SEH%20%E7%9A%84%E6%B5%85%E6%98%BE%E8%AE%A4%E8%AF%86/" title="对 SEH 的浅显认识">对 SEH 的浅显认识</a><time datetime="2021-08-04T15:45:36.386Z" title="发表于 2021-08-04 23:45:36">2021-08-04</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/08/03/%E9%9D%99%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/" title="静态反调试技术"><img src="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="静态反调试技术"/></a><div class="content"><a class="title" href="/2021/08/03/%E9%9D%99%E6%80%81%E5%8F%8D%E8%B0%83%E8%AF%95%E6%8A%80%E6%9C%AF/" title="静态反调试技术">静态反调试技术</a><time datetime="2021-08-03T11:33:06.160Z" title="发表于 2021-08-03 19:33:06">2021-08-03</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/27/TLS%20%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0/" title="TLS 回调函数"><img src="/pictures/%E9%80%86%E5%90%91%E5%B7%A5%E7%A8%8B%E6%A0%B8%E5%BF%83%E5%8E%9F%E7%90%86.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="TLS 回调函数"/></a><div class="content"><a class="title" href="/2021/07/27/TLS%20%E5%9B%9E%E8%B0%83%E5%87%BD%E6%95%B0/" title="TLS 回调函数">TLS 回调函数</a><time datetime="2021-07-27T10:31:51.543Z" title="发表于 2021-07-27 18:31:51">2021-07-27</time></div></div><div class="aside-list-item"><a class="thumbnail" href="/2021/07/21/theSecond/" title="googleCTF RE-CPP解题思路"><img src="/pictures/googlectf.jpg" onerror="this.onerror=null;this.src='/img/404.jpg'" alt="googleCTF RE-CPP解题思路"/></a><div class="content"><a class="title" href="/2021/07/21/theSecond/" title="googleCTF RE-CPP解题思路">googleCTF RE-CPP解题思路</a><time datetime="2021-07-21T10:29:32.175Z" title="发表于 2021-07-21 18:29:32">2021-07-21</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2021 By 4nsw3r</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside_config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><a id="to_comment" href="#post-comment" title="直达评论"><i class="fas fa-comments"></i></a><button id="go-up" type="button" title="回到顶部"><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"><script>function addGitalkSource () {
+  const ele = document.createElement('link')
+  ele.rel = 'stylesheet'
+  ele.href= 'https://cdn.jsdelivr.net/npm/gitalk/dist/gitalk.min.css'
+  document.getElementsByTagName('head')[0].appendChild(ele)
+}
+
+function loadGitalk () {
+  function initGitalk () {
+    var gitalk = new Gitalk(Object.assign({
+      clientID: '8b894a75330a300a8273',
+      clientSecret: '5233f13adb120ebd05fb73c5dd517f8dbd152e75',
+      repo: '4nsw3r123.github.io',
+      owner: '4nsw3r123',
+      admin: ['4nsw3r123'],
+      id: '8580be26d8077b120877761e3c81ab91',
+      language: 'en',
+      perPage: 10,
+      distractionFreeMode: false,
+      pagerDirection: 'last',
+      createIssueManually: false,
+      updateCountCallback: commentCount
+    },null))
+
+    gitalk.render('gitalk-container')
+  }
+
+  if (typeof Gitalk === 'function') initGitalk()
+  else {
+    addGitalkSource()
+    getScript('https://cdn.jsdelivr.net/npm/gitalk@latest/dist/gitalk.min.js').then(initGitalk)
+  }
+}
+
+function commentCount(n){
+  let isCommentCount = document.querySelector('#post-meta .gitalk-comment-count')
+  if (isCommentCount) {
+    isCommentCount.innerHTML= n
+  }
+}
+
+if ('Gitalk' === 'Gitalk' || !false) {
+  if (false) btf.loadComment(document.getElementById('gitalk-container'), loadGitalk)
+  else loadGitalk()
+} else {
+  function loadOtherComment () {
+    loadGitalk()
+  }
+}</script></div><script id="canvas_nest" defer="defer" color="0,0,255" opacity="0.7" zIndex="-1" count="99" mobile="false" src="https://cdn.jsdelivr.net/npm/butterfly-extsrc@1/dist/canvas-nest.min.js"></script><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
